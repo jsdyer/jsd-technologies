@@ -14,6 +14,17 @@
       "feature": true
     },
     {
+      "title": "net HUSH",
+      "category": "Indie web",
+      "status": "Working reader · source available",
+      "description": "The 2001 anonymous-surfing site, reborn as a quiet RSS and Atom reading room. Privacy, security and open-web headlines without publisher ads or tracking scripts, a local reading shelf, and browser-local privacy tools.",
+      "stack": "JavaScript · Node.js · RSS / Atom",
+      "url": "https://github.com/jsdyer/nethush-com",
+      "source": "https://github.com/jsdyer/nethush-com",
+      "symbol": "◎",
+      "feature": true
+    },
+    {
       "title": "Timefold",
       "category": "Archiving",
       "status": "Source available",
@@ -72,16 +83,6 @@
       "url": "https://github.com/jsdyer/funapps-ca",
       "source": "https://github.com/jsdyer/funapps-ca",
       "symbol": "✦"
-    },
-    {
-      "title": "NetHush",
-      "category": "Indie web",
-      "status": "In development",
-      "description": "Revisiting an old internet idea through the lens of privacy, useful tools, and a calmer daily web.",
-      "stack": "Privacy · web experiments",
-      "url": "https://github.com/jsdyer/nethush-com",
-      "source": "https://github.com/jsdyer/nethush-com",
-      "symbol": "◎"
     }
   ],
   "notes": [
