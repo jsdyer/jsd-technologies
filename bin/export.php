@@ -14,5 +14,18 @@ foreach (content($key)['notes'] ?? [] as $note) {
     $dir = $out . '/notes/' . $note['slug']; if (!is_dir($dir)) mkdir($dir, 0755, true);
     file_put_contents($dir . '/index.html', render_page($key, $note['slug']));
 }
-file_put_contents($out . '/feed.xml', render_feed(content($key), $key));
+if ($key === 'workshop') {
+    foreach (['how-to'=>'guides', 'tips'=>'tips', 'community'=>'community'] as $path=>$view) {
+        $dir = $out . '/' . $path; if (!is_dir($dir)) mkdir($dir, 0755, true);
+        file_put_contents($dir . '/index.html', render_page($key, null, $view));
+    }
+    foreach (content($key)['guides'] as $guide) {
+        if (!preg_match('/^[a-z0-9-]+$/D', $guide['slug'])) throw new RuntimeException('Invalid guide slug');
+        $dir = $out . '/how-to/' . $guide['slug']; if (!is_dir($dir)) mkdir($dir, 0755, true);
+        file_put_contents($dir . '/index.html', render_page($key, $guide['slug'], 'guide'));
+    }
+}
+file_put_contents($out . '/sitemap.xml', render_sitemap($key));
+file_put_contents($out . '/robots.txt', "User-agent: *\nDisallow: /\n");
+file_put_contents($out . '/feed.xml' , render_feed(content($key), $key));
 echo "Exported $key to $out\n";

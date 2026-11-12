@@ -4,15 +4,22 @@ require dirname(__DIR__) . '/app/core.php';
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
-if (parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) !== '/' && parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) !== '/index.php') {
-    http_response_code(404); echo render_page(site_key(), '__missing__'); exit;
-}
 try {
-    if (isset($_GET['feed']) && $_GET['feed'] === 'rss') {
-        header('Content-Type: application/rss+xml; charset=utf-8'); echo render_feed(content(site_key()), site_key());
+    $key = site_key();
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    // Canonical trailing slash for known workshop paths only.
+    if ($key === 'workshop' && preg_match('~^/(how-to(?:/[a-z0-9-]+)?|tips|community)$~D', $path)) {
+        header('Location: ' . $path . '/', true, 301); exit;
+    }
+    [$view, $slug] = route_request($key, $path, $_GET);
+    if ($view === 'feed') {
+        header('Content-Type: application/rss+xml; charset=utf-8'); echo render_feed(content($key), $key);
+    } elseif ($view === 'sitemap') {
+        header('Content-Type: application/xml; charset=utf-8'); echo render_sitemap($key);
+    } elseif ($view === 'robots') {
+        header('Content-Type: text/plain; charset=utf-8'); echo "User-agent: *\nAllow: /\nSitemap: " . production_url($key, 'sitemap.xml') . "\n";
     } else {
-        header('Content-Type: text/html; charset=utf-8');
-        echo render_page(site_key(), isset($_GET['note']) && is_string($_GET['note']) ? $_GET['note'] : null);
+        header('Content-Type: text/html; charset=utf-8'); echo render_page($key, $slug, $view);
     }
 } catch (Throwable $error) {
     error_log($error->getMessage()); http_response_code(503); echo 'The site is temporarily unavailable. Please try again shortly.';

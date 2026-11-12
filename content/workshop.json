@@ -1,6 +1,6 @@
 {
   "title": "JSD Technology — The workshop",
-  "description": "Projects, homelab experiments, and notes from an independent Canadian developer. Built for the open web.",
+  "description": "Practical Linux, PHP, SQLite and homelab how-tos, quick tips, open-source projects and a shared technical notebook. By Jeffrey Dyer in Metro Vancouver.",
   "projects": [
     {
       "title": "CoolCode",
@@ -170,6 +170,302 @@
       "questions": "Preserve originals and keep derivatives separate. Decide which metadata is useful privately and strip location data from public exports.",
       "link": null,
       "link_label": null
+    }
+  ],
+  "guides": [
+    {
+      "slug": "back-up-sqlite-and-check-the-copy",
+      "title": "Back up SQLite and check the copy",
+      "category": "PHP & SQLite",
+      "summary": "A small database deserves a real backup. Make a consistent snapshot, inspect it, and practise restoring away from production.",
+      "needs": "Linux shell, sqlite3 CLI, and read access to your existing database. Replace the example paths; keep backups outside the web root.",
+      "date": "2026-11-12",
+      "minutes": 5,
+      "sections": [
+        {
+          "heading": "Start with a real database",
+          "text": "A typo in a database path can create an empty database. Open the source read-only and inspect its tables before you back it up. These examples use /srv/my-app/var/app.sqlite.",
+          "code": "sqlite3 -readonly /srv/my-app/var/app.sqlite \".tables\"",
+          "check": "Confirm you see the tables you expect, not an empty list."
+        },
+        {
+          "heading": "Create a separate snapshot",
+          "text": "Make a private backup directory owned by your account. Use a new filename for each backup. The SQLite shell’s backup command takes a consistent database snapshot, including data that may currently be in a write-ahead log. Do not just copy the main file while an application is writing.",
+          "code": "umask 077\nmkdir -p \"$HOME/backups/my-app\"\nsqlite3 -readonly /srv/my-app/var/app.sqlite \".backup '$HOME/backups/my-app/app-2026-11-12.sqlite'\"",
+          "check": "Stop if the command reports an error. Keep the previous good backup."
+        },
+        {
+          "heading": "Check, then rehearse recovery",
+          "text": "Open the copy, run an integrity check, and inspect the schema. An “ok” result checks database structure; it does not prove your application data is complete. Point a separate test copy of your application at the backup, with email, payments and background jobs disabled. Confirm expected records appear before you need a real recovery.",
+          "code": "sqlite3 -readonly \"$HOME/backups/my-app/app-2026-11-12.sqlite\" \"PRAGMA integrity_check;\"\nsqlite3 -readonly \"$HOME/backups/my-app/app-2026-11-12.sqlite\" \".schema\"",
+          "check": "Store another protected copy on a different device. A backup on the same disk cannot survive losing that disk."
+        }
+      ],
+      "sources": [
+        {
+          "title": "SQLite command-line shell",
+          "url": "https://sqlite.org/cli.html"
+        },
+        {
+          "title": "SQLite backup API background",
+          "url": "https://sqlite.org/backup.html"
+        },
+        {
+          "title": "Integrity check reference",
+          "url": "https://sqlite.org/pragma.html#pragma_integrity_check"
+        }
+      ],
+      "related": [
+        "run-a-php-site-locally",
+        "verify-an-archive-with-sha256"
+      ]
+    },
+    {
+      "slug": "test-https-before-changing-dns",
+      "title": "Test a new HTTPS server before changing DNS",
+      "category": "Web & servers",
+      "summary": "Send one request to a new server while keeping the real hostname and normal certificate checks.",
+      "needs": "curl, a domain you manage, and the new server’s IP. Replace example.com and 192.0.2.10 (a documentation address).",
+      "date": "2026-11-12",
+      "minutes": 5,
+      "sections": [
+        {
+          "heading": "Keep the hostname in the URL",
+          "text": "Using an IP address as the URL can select the wrong virtual host and certificate. A curl resolve override changes the destination for one hostname and port, while the URL keeps its hostname. The new server needs a valid certificate for that name.",
+          "code": "curl --noproxy \"*\" --resolve example.com:443:192.0.2.10 \\\n  --connect-timeout 10 --max-time 30 \\\n  -sS -D - -o /dev/null https://example.com/",
+          "check": "Look at the HTTP status and any Location header. This performs a GET and discards the response body."
+        },
+        {
+          "heading": "Confirm where the request went",
+          "text": "Print the remote IP and status. --noproxy makes this a direct test; leave it out if your network requires an approved proxy, but understand that a proxy may resolve the destination instead.",
+          "code": "curl --noproxy \"*\" --resolve example.com:443:192.0.2.10 \\\n  --connect-timeout 10 --max-time 30 -sS -o /dev/null \\\n  -w \"remote=%{remote_ip} status=%{http_code}\\n\" https://example.com/",
+          "check": "The reported IP should be the server you intended. Do not add -k to make a certificate failure disappear."
+        },
+        {
+          "heading": "Check more than the homepage",
+          "text": "Repeat for a static asset and a representative application page. A redirect to www.example.com is a different hostname and needs its own override and certificate. Avoid automatically following redirects during this first check. This does not change DNS for anyone else; it also does not test browser JavaScript, logins or every application path."
+        }
+      ],
+      "sources": [
+        {
+          "title": "curl manual: resolve, noproxy and write-out",
+          "url": "https://curl.se/docs/manpage.html"
+        }
+      ],
+      "related": [
+        "inspect-apache-virtual-hosts",
+        "check-local-dns-forward-and-reverse"
+      ]
+    },
+    {
+      "slug": "inspect-apache-virtual-hosts",
+      "title": "Why is Apache showing the wrong website?",
+      "category": "Web & servers",
+      "summary": "Inspect the virtual-host map and configuration syntax before you restart anything.",
+      "needs": "An Apache 2.4 server you administer. Commands may need sudo to read configuration and certificate paths.",
+      "date": "2026-11-12",
+      "minutes": 5,
+      "sections": [
+        {
+          "heading": "Ask Apache what it will load",
+          "text": "The command name varies by distribution. Debian and Ubuntu commonly use apache2ctl; other installations use apachectl. Run the matching pair, not both. These inspect the configuration on disk.",
+          "code": "sudo apache2ctl configtest\nsudo apache2ctl -S",
+          "check": "Expected: Syntax OK, followed by a map of addresses, ports, hostnames and configuration-file locations."
+        },
+        {
+          "heading": "Read the default and the names",
+          "text": "For each relevant address and port, compare ServerName and ServerAlias with the hostname you requested. Check which virtual host is the default for that address. A missing or mismatched name can send a request there. On systems with apachectl, the equivalent commands are:",
+          "code": "sudo apachectl configtest\nsudo apachectl -S",
+          "check": "Check both port 80 and port 443. An HTTP redirect can be correct while the HTTPS virtual host is wrong."
+        },
+        {
+          "heading": "Separate configuration from the running service",
+          "text": "The dump shows the configuration files now, which may differ from what the running process last loaded. Record the file and line number before editing. Verify DocumentRoot, the requested hostname and any reverse-proxy route. Re-run the syntax check after a change, then reload through your normal service-management procedure. A successful syntax check alone does not prove the site serves the intended content."
+        }
+      ],
+      "sources": [
+        {
+          "title": "Apache control interface",
+          "url": "https://httpd.apache.org/docs/2.4/programs/apachectl.html"
+        },
+        {
+          "title": "Apache virtual-host debugging",
+          "url": "https://httpd.apache.org/docs/2.4/vhosts/examples.html"
+        }
+      ],
+      "related": [
+        "test-https-before-changing-dns",
+        "run-a-php-site-locally"
+      ]
+    },
+    {
+      "slug": "verify-an-archive-with-sha256",
+      "title": "Check an archive for changed files with SHA-256",
+      "category": "Archiving",
+      "summary": "Give a folder of photos, documents or exports a simple integrity record you can check later.",
+      "needs": "Linux with GNU find and sha256sum. A stable archive folder with no files being written during the scan.",
+      "date": "2026-11-12",
+      "minutes": 5,
+      "sections": [
+        {
+          "heading": "Create the manifest outside the archive",
+          "text": "Work from the archive’s root so the stored paths remain relative. Use a fresh manifest filename; redirection overwrites an existing file. Keeping the manifest outside the scanned directory prevents it from hashing itself.",
+          "code": "cd /path/to/archive\nfind . -type f -exec sha256sum -- {} + > ../archive-2026-11-12.sha256",
+          "check": "Review any errors. This records regular files, not symlink targets, directory permissions or empty directories."
+        },
+        {
+          "heading": "Verify from the same relative root",
+          "text": "After copying the archive to another disk, change into that copy and check against the saved manifest. Keep the folder layout the same.",
+          "code": "cd /path/to/restored-archive\nsha256sum --check /path/to/archive-2026-11-12.sha256",
+          "check": "OK means a listed file matches. FAILED indicates changed bytes; a missing file produces an error. Newly added files are not detected by checking an older manifest."
+        },
+        {
+          "heading": "Keep a trusted reference",
+          "text": "Checksums detect accidental changes only when you trust the manifest. Someone who can replace both the files and the manifest can make them match again. Keep a separate protected copy of the manifest. If a file fails, compare it with another backup before replacing anything. A checksum records integrity, not whether a photo is meaningful or a document can still be opened."
+        }
+      ],
+      "sources": [
+        {
+          "title": "GNU SHA-2 utilities",
+          "url": "https://www.gnu.org/software/coreutils/manual/html_node/sha2-utilities.html"
+        },
+        {
+          "title": "GNU find: executing commands",
+          "url": "https://www.gnu.org/software/findutils/manual/html_node/find_html/Single-File.html"
+        }
+      ],
+      "related": [
+        "back-up-sqlite-and-check-the-copy"
+      ]
+    },
+    {
+      "slug": "check-local-dns-forward-and-reverse",
+      "title": "Check local DNS in both directions",
+      "category": "Homelab",
+      "summary": "A device name can resolve correctly while reverse lookups still fail. Test each direction against the resolver you intended.",
+      "needs": "dig (BIND utilities), your local DNS server address, and a device with a known name and IP. Example addresses must be replaced.",
+      "date": "2026-11-12",
+      "minutes": 5,
+      "sections": [
+        {
+          "heading": "Ask the local resolver directly",
+          "text": "Start with an explicit server so you know which resolver answers. Here, 192.168.1.2 is the example resolver and nas.home.arpa is the example device.",
+          "code": "dig @192.168.1.2 nas.home.arpa A +noall +answer +comments",
+          "check": "An A record should contain the expected IPv4 address. Check the response status too; an empty answer is not automatically a timeout."
+        },
+        {
+          "heading": "Look up the address in reverse",
+          "text": "Forward A records and reverse PTR records are separate. Creating one does not automatically create the other in every setup. Query the example device address.",
+          "code": "dig @192.168.1.2 -x 192.168.1.10 +noall +answer +comments",
+          "check": "Look for a PTR record with the expected hostname. A trailing dot is normal in DNS output."
+        },
+        {
+          "heading": "Compare with the client’s usual resolver",
+          "text": "Remove the explicit server to see how dig behaves using its resolver configuration. If the answers differ, inspect the client’s DNS settings before changing records. A browser using its own encrypted DNS may behave differently again.",
+          "code": "dig nas.home.arpa A\ndig -x 192.168.1.10",
+          "check": "Use your local resolver for private names and addresses. home.arpa is intended for home networks; keep those records local rather than publishing them in public DNS."
+        }
+      ],
+      "sources": [
+        {
+          "title": "BIND dig manual",
+          "url": "https://bind9.readthedocs.io/en/stable/manpages.html#dig-dns-lookup-utility"
+        },
+        {
+          "title": "home.arpa specification",
+          "url": "https://www.rfc-editor.org/rfc/rfc8375.html"
+        }
+      ],
+      "related": [
+        "test-https-before-changing-dns"
+      ]
+    },
+    {
+      "slug": "run-a-php-site-locally",
+      "title": "Run a small PHP site locally without a build step",
+      "category": "PHP & SQLite",
+      "summary": "A quick development loop for plain PHP: one public folder, one local server, and a clear boundary around private files.",
+      "needs": "PHP CLI and a project with public/index.php. Work from the project root; this example is for local development.",
+      "date": "2026-11-12",
+      "minutes": 5,
+      "sections": [
+        {
+          "heading": "Check the CLI you are actually using",
+          "text": "The terminal PHP version can differ from the PHP used by Apache or PHP-FPM. Check the version and enabled modules before debugging an extension error.",
+          "code": "php -v\nphp -m",
+          "check": "For PDO SQLite applications, look for PDO and pdo_sqlite. Your production PHP configuration must be checked separately."
+        },
+        {
+          "heading": "Serve only the public directory",
+          "text": "Start from the project root. Binding to 127.0.0.1 keeps this listener on loopback. The document root is public, so sibling config and database directories are outside the served tree.",
+          "code": "php -S 127.0.0.1:8080 -t public",
+          "check": "Open http://127.0.0.1:8080 in a browser on the same machine. Stop the server with Ctrl+C."
+        },
+        {
+          "heading": "Add the application’s router when it has one",
+          "text": "For clean URLs, use the router supplied with the project. For this workshop repository the command is below. A router is PHP code, not an Apache .htaccess file. The built-in server is a development tool; use your normal Apache/PHP-FPM setup for public hosting.",
+          "code": "SITE_KEY=workshop php -S 127.0.0.1:8081 -t public public/router.php",
+          "check": "Keep secrets and database files out of public/. Check both a content page and a missing URL before calling the routing finished."
+        }
+      ],
+      "sources": [
+        {
+          "title": "PHP built-in development server",
+          "url": "https://www.php.net/manual/en/features.commandline.webserver.php"
+        },
+        {
+          "title": "PHP command-line options",
+          "url": "https://www.php.net/manual/en/features.commandline.options.php"
+        }
+      ],
+      "related": [
+        "back-up-sqlite-and-check-the-copy",
+        "inspect-apache-virtual-hosts"
+      ]
+    }
+  ],
+  "tips": [
+    {
+      "slug": "one-request-new-server",
+      "category": "Web & servers",
+      "title": "Try the new server without changing DNS",
+      "text": "Use curl --resolve for a single hostname and port. Keep certificate verification enabled and check the actual remote IP.",
+      "guide": "test-https-before-changing-dns"
+    },
+    {
+      "slug": "backup-the-database",
+      "category": "PHP & SQLite",
+      "title": "A database file copy is not always a backup",
+      "text": "For an active SQLite database, use a consistent snapshot. Then open and inspect the copy before trusting your backup routine.",
+      "guide": "back-up-sqlite-and-check-the-copy"
+    },
+    {
+      "slug": "read-the-vhost-map",
+      "category": "Web & servers",
+      "title": "Ask Apache which site it thinks is first",
+      "text": "The virtual-host dump helps explain why an unexpected default site appears. Compare hostnames on both HTTP and HTTPS.",
+      "guide": "inspect-apache-virtual-hosts"
+    },
+    {
+      "slug": "two-directions",
+      "category": "Homelab",
+      "title": "Test names → addresses and addresses → names",
+      "text": "A successful forward lookup does not prove reverse DNS works. Check A and PTR records against the same local resolver.",
+      "guide": "check-local-dns-forward-and-reverse"
+    },
+    {
+      "slug": "manifest-outside",
+      "category": "Archiving",
+      "title": "Keep the checksum manifest outside the scan",
+      "text": "A checksum file should not try to hash itself. Use relative paths so you can verify a restored copy on another disk.",
+      "guide": "verify-an-archive-with-sha256"
+    },
+    {
+      "slug": "public-root",
+      "category": "PHP & SQLite",
+      "title": "Make public/ the boundary",
+      "text": "Point the web server at the public directory. Keep application configuration, database files and backups beside it, outside the web root.",
+      "guide": "run-a-php-site-locally"
     }
   ]
 }

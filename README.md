@@ -1,15 +1,15 @@
 # JSD Technologies: two doors, one workshop
 
-A small, framework-free PHP website for two domains. **jsdtechnologies.ca** is the client entrance: web development, IT solutions, security, search visibility, advertising, monetization, indicative CAD pricing, real independent work, and a browser-local project brief builder. **jsd.technology** is the technical workshop: searchable projects, exploratory concept briefs, build notes, and RSS. The personal field journal lives independently in [jsdyer/jeffrey-dyer](https://github.com/jsdyer/jeffrey-dyer).
+A small, framework-free PHP website for two domains. **jsdtechnologies.ca** is the client entrance: web development, IT solutions, security, search visibility, advertising, monetization, indicative CAD pricing, real independent work, and a browser-local project brief builder. **jsd.technology** is the technical workshop: searchable how-tos and tips, a community question board, projects, exploratory concept briefs, build notes, and RSS. The personal field journal lives independently in [jsdyer/jeffrey-dyer](https://github.com/jsdyer/jeffrey-dyer).
 
 ## Run locally
 
 Requires PHP 8.2+; no Composer, Node, or frontend build step.
 
 ```sh
-SITE_KEY=studio php -S localhost:8080 -t public
+SITE_KEY=studio php -S localhost:8080 -t public public/router.php
 # In another terminal:
-SITE_KEY=workshop php -S localhost:8081 -t public
+SITE_KEY=workshop php -S localhost:8081 -t public public/router.php
 ```
 
 Open http://localhost:8080 or http://localhost:8081. Production links in the shared navigation deliberately use the actual domains. For a single-origin preview of all three sites, see `bin/export.php` below. `SITE_KEY` is a process environment override for local use; Apache selects workshop only for `jsd.technology` and `www.jsd.technology`, otherwise studio. No arbitrary Host value enters an absolute URL.
@@ -18,7 +18,7 @@ Open http://localhost:8080 or http://localhost:8081. Production links in the sha
 
 1. Clone into `/srv/jsd-technologies` (or adjust paths).
 2. Point **both domains' document roots to `public/`**, never the repository root. The content files, scripts, and optional database stay outside the web root.
-3. Adapt `deploy/apache.conf.example` to the server's existing PHP handler. Enable HTTPS with your certificate tooling and redirect HTTP to HTTPS before launch. DNS and production hosting are not changed by this repository.
+3. Adapt `deploy/apache.conf.example` to the server's existing PHP handler. Enable Apache mod_rewrite for the supplied .htaccess clean-URL routing. Enable HTTPS with your certificate tooling and redirect HTTP to HTTPS before launch. DNS and production hosting are not changed by this repository.
 4. Keep the checkout read-only to the web user. Only a CLI content import needs write access to `var/` when using SQLite.
 5. Review the suggested pricing, service scope, public copy, and contact email before a public launch. Prices are planning ranges, not market research or binding offers. The email currently used is `jeffdyer@gmail.com`; change it in templates and `public/assets/app.js` if you prefer a business mailbox.
 
@@ -32,7 +32,7 @@ SQLite is optional, using PHP PDO SQLite. The CLI imports the JSON and both webs
 
 ```sh
 php bin/content.php import
-CONTENT_STORE=database SITE_KEY=workshop php -S localhost:8081 -t public
+CONTENT_STORE=database SITE_KEY=workshop php -S localhost:8081 -t public public/router.php
 ```
 
 For MariaDB, create a UTF-8 database and dedicated account, then provide `DB_DSN`, `DB_USER`, and `DB_PASSWORD` through your server's environment, not a tracked file. The PDO DSN form is `mysql:host=localhost;dbname=jsd_technologies;charset=utf8mb4`. Run the same import command under a deployment account, then serve with `CONTENT_STORE=database` and a read-only database account. The portable table uses `VARCHAR(32)` and `TEXT`. No public database editor is exposed.
@@ -47,7 +47,7 @@ The database is a deliberately small content store, not an inquiry system or CMS
 - `app/layout.php`: metadata, shared navigation and footer.
 - `app/studio.php`, `app/workshop.php`: presentation and service copy.
 - `content/studio.json`: the six service offerings (the cards and inquiry selector use the same data).
-- `content/workshop.json`: projects, concept briefs, and notes; use simple paragraphs, not raw HTML.
+- `content/workshop.json`: guides, tips, projects, concept briefs, and notes; use plain text, not raw HTML.
 - `public/assets/`: self-contained CSS, JavaScript, and SVG favicon.
 - `bin/content.php`: CLI database import/export.
 - `bin/export.php`: render the exact PHP templates as static preview pages.
@@ -74,3 +74,11 @@ Browser QA covers the brief generation/copy flow, project filters/search, naviga
 The workshop has four expandable concept briefs: an IBKR portfolio notebook, a Strava ride journal, a sensor dashboard, and a photo contact-sheet tool. These are placeholders for investigation, not working integrations. There are no connected accounts, tokens, live financial data, or trading controls. Official API starting points are linked from the IBKR and Strava briefs. Access and usage rules must be checked again before implementation.
 
 The studio uses “search visibility” and “getting found” language. Security services describe authorized incident triage, hardening, updates, and recovery; they do not claim certifications, guaranteed prevention, or 24/7 emergency coverage. Advertising spend is separate from service fees.
+
+## The useful technical notebook
+
+`/how-to/` has six substantive guides with topic filters, search, prerequisite notes, copyable commands, check steps, references and related reading. `/tips/` is a short searchable companion. `/community/` links to public GitHub issue templates for questions, tips and corrections, plus an email alternative. There is no account system or pretend forum activity on the site. GitHub handles its own authentication; opening a template does not submit it.
+
+Clean article URLs use `/how-to/<slug>/`. Existing `?note=<slug>` links continue to work. The dynamic site exposes `/sitemap.xml` and `/robots.txt`, plus the existing RSS endpoint; workshop RSS includes guides and notes. Titles, descriptions, canonical URLs and Open Graph metadata are server rendered. Static preview exports stay noindex and disallow crawling. This prepares the real domains for discovery but does not deploy those domains, submit anything to a search engine or guarantee indexing.
+
+See CONTRIBUTING.md for the guide schema. The current examples were checked against official documentation; the smoke suite validates rendering, links, routing and storage. Server-specific instructions still need to be adapted and tested on the reader's own environment. The studio explicitly identifies Metro Vancouver as its base.

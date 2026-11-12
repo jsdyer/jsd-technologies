@@ -1,0 +1,28 @@
+name: Share a tip
+description: Pass on a useful technical discovery.
+title: '[Tip] '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: The tip, with enough context to try it
+      description: Include prerequisites, software versions and how to check the result. Remove secrets.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Original source or supporting documentation
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Sharing
+      options:
+        - label: I have permission to publish this contribution, and understand this issue is public.
+          required: true

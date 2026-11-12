@@ -1,0 +1,21 @@
+name: Correct a guide
+description: Help fix an unclear, outdated or incorrect instruction.
+title: '[Correction] '
+body:
+  - type: input
+    id: guide
+    attributes:
+      label: Guide title or URL
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What needs changing?
+      description: Include your environment and expected versus actual result. Do not include credentials or private logs.
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix and reference

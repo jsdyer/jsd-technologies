@@ -1,0 +1,23 @@
+name: Request a how-to
+description: Suggest a practical question for the workshop notebook.
+title: '[How-to request] '
+body:
+  - type: markdown
+    attributes:
+      value: 'Public discussion: remove secrets and personal details. Suggestions are reviewed; no response time is promised.'
+  - type: textarea
+    id: question
+    attributes:
+      label: What would you like to understand or do?
+      description: Describe one concrete outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and what you have tried
+      description: Distribution, software versions and relevant non-sensitive context.
+  - type: textarea
+    id: useful
+    attributes:
+      label: What would make a useful answer?
