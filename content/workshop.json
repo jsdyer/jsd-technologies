@@ -1,0 +1,128 @@
+{
+  "title": "JSD Technology — The workshop",
+  "description": "Projects, homelab experiments, and notes from an independent Canadian developer. Built for the open web.",
+  "projects": [
+    {
+      "title": "CoolCode",
+      "category": "Self-hosting",
+      "status": "Source available",
+      "description": "The main workbench: small tools for Linux, home labs, self-hosting, and keeping an independent web.",
+      "stack": "PHP · Python · Go · Linux",
+      "url": "https://coolcode.ca/",
+      "source": "https://github.com/jsdyer/jsdyer.github.io",
+      "symbol": "~/",
+      "feature": true
+    },
+    {
+      "title": "Timefold",
+      "category": "Archiving",
+      "status": "Source available",
+      "description": "A private time machine for photographs, notes, game saves, and the fragments worth keeping.",
+      "stack": "PHP · MariaDB / SQLite",
+      "url": "https://github.com/jsdyer/jsdyer.github.io/tree/main/tools/timefold",
+      "source": "https://github.com/jsdyer/jsdyer.github.io/tree/main/tools/timefold",
+      "symbol": "◷"
+    },
+    {
+      "title": "Archive Shelf",
+      "category": "Archiving",
+      "status": "Source available",
+      "description": "Search newsletters and meeting minutes, then jump to the exact page in the original document.",
+      "stack": "Python · SQLite FTS5",
+      "url": "https://coolcode.ca/archive-shelf/",
+      "source": "https://github.com/jsdyer/jsdyer.github.io/tree/main/tools/archive-shelf",
+      "symbol": "▤"
+    },
+    {
+      "title": "Waystation",
+      "category": "Archiving",
+      "status": "Source available",
+      "description": "Capture small websites in verifiable capsules. Keep browsing after the original server disappears.",
+      "stack": "Go · portable archives",
+      "url": "https://github.com/jsdyer/jsdyer.github.io/tree/main/tools/waystation",
+      "source": "https://github.com/jsdyer/jsdyer.github.io/tree/main/tools/waystation",
+      "symbol": "⌁"
+    },
+    {
+      "title": "Superapp.ca",
+      "category": "Indie web",
+      "status": "In development",
+      "description": "An independent Canadian corner of the web, with small services and a little more personality.",
+      "stack": "PHP · Canadian indie web",
+      "url": "https://github.com/jsdyer/superapp-ca",
+      "source": "https://github.com/jsdyer/superapp-ca",
+      "symbol": "✳"
+    },
+    {
+      "title": "Hackme.ca",
+      "category": "Play",
+      "status": "In development",
+      "description": "A playground for hacking puzzles, simulations, and the strange charm of the old internet.",
+      "stack": "Ethical hacking · retro web",
+      "url": "https://github.com/jsdyer/hackme-ca",
+      "source": "https://github.com/jsdyer/hackme-ca",
+      "symbol": ">_"
+    },
+    {
+      "title": "Funapps.ca",
+      "category": "Play",
+      "status": "In development",
+      "description": "Small, unhurried games and playful experiments with a Canadian point of view.",
+      "stack": "Browser games · Canada",
+      "url": "https://github.com/jsdyer/funapps-ca",
+      "source": "https://github.com/jsdyer/funapps-ca",
+      "symbol": "✦"
+    },
+    {
+      "title": "NetHush",
+      "category": "Indie web",
+      "status": "In development",
+      "description": "Revisiting an old internet idea through the lens of privacy, useful tools, and a calmer daily web.",
+      "stack": "Privacy · web experiments",
+      "url": "https://github.com/jsdyer/nethush-com",
+      "source": "https://github.com/jsdyer/nethush-com",
+      "symbol": "◎"
+    }
+  ],
+  "notes": [
+    {
+      "slug": "small-tools-long-life",
+      "title": "Small tools. Long life.",
+      "category": "BUILD PHILOSOPHY",
+      "date": "2026-11-12",
+      "summary": "A useful program should still make sense when you come back to it next year.",
+      "paragraphs": [
+        "The tools I keep coming back to have a few things in common: a clear job, readable source, and a way to take my data with me. They do not need a subscription to remain useful.",
+        "That is the direction of this workshop. PHP for a small web interface, SQLite when a single file is enough, Python for a practical command-line task, and Go when a portable executable makes the job easier. The language follows the problem.",
+        "Simple does not mean careless. Validation, clear failure messages, a tested restore process, and useful documentation matter more than a complicated architecture.",
+        "CoolCode is where the runnable projects live. This site is the notebook beside the workbench: the questions, experiments, and decisions that connect them."
+      ]
+    },
+    {
+      "slug": "a-home-for-local-dns",
+      "title": "A home for local DNS.",
+      "category": "HOMELAB NOTES",
+      "date": "2026-11-12",
+      "summary": "Local names and reverse lookups belong close to the machines they describe.",
+      "paragraphs": [
+        "A home network becomes easier to understand when its services have names. A resolver can answer the questions about the local network and forward the rest to an upstream service.",
+        "The design I am exploring pairs dnsmasq for local records with an encrypted upstream resolver. The home.arpa namespace gives local names a clear boundary. Reverse lookups should be answered locally too.",
+        "The next useful layer is an inventory: when a device last appeared, which address it used, and what services it advertised. Discovery and publication should be separate steps, so an observed device does not automatically become a trusted DNS entry.",
+        "The goal is a network I can explain, export, and repair. A dashboard is useful only if the underlying records remain understandable."
+      ]
+    },
+    {
+      "slug": "archives-that-open",
+      "title": "An archive is only useful if it opens.",
+      "category": "DIGITAL PRESERVATION",
+      "date": "2026-11-12",
+      "summary": "Keeping the bytes is the beginning. Finding and reading them is the next job.",
+      "paragraphs": [
+        "A directory of saved files is a good start. An archive becomes much more useful when it also preserves context: what a file is, where it came from, and how to open it.",
+        "Archive Shelf approaches the finding problem with full-text search and links back to original pages. Waystation approaches the disappearing-website problem with portable captures. Tape Index helps check whether the bytes still match a saved manifest.",
+        "These are different parts of the same habit: keep originals, make searchable derivatives, and keep enough information to reproduce the process.",
+        "I prefer an archive that remains usable without the software that created it. Plain text, conventional files, and documented exports make that a realistic goal."
+      ]
+    }
+  ]
+}

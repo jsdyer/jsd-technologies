@@ -1,0 +1,23 @@
+# Configure TLS certificates using your normal server process before public launch.
+# Two names, one checkout. Hostname selection is an explicit allowlist in core.php.
+<VirtualHost *:80>
+    ServerName jsdtechnologies.ca
+    ServerAlias www.jsdtechnologies.ca
+    DocumentRoot /srv/jsd-technologies/public
+    <Directory /srv/jsd-technologies/public>
+        Options -Indexes
+        AllowOverride FileInfo Options Indexes
+        Require all granted
+    </Directory>
+    # Add your existing PHP-FPM handler here, or use your configured mod_php.
+</VirtualHost>
+<VirtualHost *:80>
+    ServerName jsd.technology
+    ServerAlias www.jsd.technology
+    DocumentRoot /srv/jsd-technologies/public
+    <Directory /srv/jsd-technologies/public>
+        Options -Indexes
+        AllowOverride FileInfo Options Indexes
+        Require all granted
+    </Directory>
+</VirtualHost>

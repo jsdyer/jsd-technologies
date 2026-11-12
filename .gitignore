@@ -1,0 +1,6 @@
+/var/*
+!/var/.gitkeep
+/.env
+/dist/
+*.sqlite*
+.DS_Store
