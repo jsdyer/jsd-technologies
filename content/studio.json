@@ -1,5 +1,79 @@
 {
-  "title": "JSD Technologies — Independent web development & Linux systems",
-  "description": "Custom web development, Linux systems, and practical automation with Jeffrey Dyer in British Columbia, Canada.",
-  "notes": []
+  "title": "JSD Technologies — Web development, IT, security & digital growth",
+  "description": "Independent web development, practical IT and security, search visibility, advertising, and monetization with Jeffrey Dyer in British Columbia, Canada.",
+  "notes": [],
+  "services": [
+    {
+      "symbol": "</>",
+      "title": "Web development & software",
+      "name": "Custom development",
+      "description": "A better website, a useful web application, or an overdue refresh. Built around what your customers and your team actually need.",
+      "items": [
+        "Business websites & customer portals",
+        "PHP applications & database design",
+        "Fast, accessible, mobile-friendly pages"
+      ],
+      "action": "Build a better website"
+    },
+    {
+      "symbol": "~/",
+      "title": "IT solutions & Linux systems",
+      "name": "IT solutions & Linux",
+      "description": "Untangle the infrastructure behind your business. Hosting, servers, domains, and reliable ways to keep things running.",
+      "items": [
+        "Linux, Apache, PHP & database setup",
+        "Hosting migrations, DNS & email delivery",
+        "Backups, restore checks & performance"
+      ],
+      "action": "Sort out the technical bits"
+    },
+    {
+      "symbol": "[+]",
+      "title": "Security & incident recovery",
+      "name": "Security & recovery",
+      "description": "Investigate a suspicious change, address a known vulnerability, or strengthen a system before something goes wrong.",
+      "items": [
+        "PHP application & server hardening",
+        "Malicious-file review & incident triage",
+        "OS/kernel updates, log review & recovery"
+      ],
+      "action": "Talk through a security concern"
+    },
+    {
+      "symbol": "↗",
+      "title": "Getting found & paid advertising",
+      "name": "Search visibility & advertising",
+      "description": "Help the right people find your business, then give them a clear reason to take the next step.",
+      "items": [
+        "Search visibility & local business pages",
+        "Facebook / Meta campaign setup & reviews",
+        "Landing pages, content & campaign measurement"
+      ],
+      "action": "Make your website easier to find"
+    },
+    {
+      "symbol": "$",
+      "title": "Monetization & customer journeys",
+      "name": "Monetization & conversion",
+      "description": "Turn a useful website into a clearer path to an inquiry, a purchase, or an ongoing customer relationship.",
+      "items": [
+        "Checkout, payments & membership flows",
+        "Offer pages, pricing & conversion improvements",
+        "Email signup & simple retention journeys"
+      ],
+      "action": "Make the next step easier"
+    },
+    {
+      "symbol": "⇄",
+      "title": "Automation & integrations",
+      "name": "Automation & integrations",
+      "description": "Connect the pieces you already use and remove the work you should not have to do by hand.",
+      "items": [
+        "APIs, webhooks & payment integrations",
+        "Data imports, exports & reporting",
+        "Scripts, dashboards & everyday workflow tools"
+      ],
+      "action": "Make your systems work together"
+    }
+  ]
 }

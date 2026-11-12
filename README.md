@@ -1,6 +1,6 @@
 # JSD Technologies: two doors, one workshop
 
-A small, framework-free PHP website for two domains. **jsdtechnologies.ca** is the client entrance: services, indicative CAD pricing, real independent work, and a browser-local project brief builder. **jsd.technology** is the technical workshop: searchable projects, build notes, and RSS. The personal field journal lives independently in [jsdyer/jeffrey-dyer](https://github.com/jsdyer/jeffrey-dyer).
+A small, framework-free PHP website for two domains. **jsdtechnologies.ca** is the client entrance: web development, IT solutions, security, search visibility, advertising, monetization, indicative CAD pricing, real independent work, and a browser-local project brief builder. **jsd.technology** is the technical workshop: searchable projects, exploratory concept briefs, build notes, and RSS. The personal field journal lives independently in [jsdyer/jeffrey-dyer](https://github.com/jsdyer/jeffrey-dyer).
 
 ## Run locally
 
@@ -46,7 +46,8 @@ The database is a deliberately small content store, not an inquiry system or CMS
 - `app/core.php`: routing helpers, escaping, PDO content loading, RSS, rendering.
 - `app/layout.php`: metadata, shared navigation and footer.
 - `app/studio.php`, `app/workshop.php`: presentation and service copy.
-- `content/workshop.json`: projects and notes; use simple paragraphs, not raw HTML.
+- `content/studio.json`: the six service offerings (the cards and inquiry selector use the same data).
+- `content/workshop.json`: projects, concept briefs, and notes; use simple paragraphs, not raw HTML.
 - `public/assets/`: self-contained CSS, JavaScript, and SVG favicon.
 - `bin/content.php`: CLI database import/export.
 - `bin/export.php`: render the exact PHP templates as static preview pages.
@@ -67,3 +68,9 @@ php bin/export.php workshop /tmp/jsd-preview/workshop
 Static exports expect the combined preview paths `/`, `/workshop/`, and `/personal/`. They are marked `noindex`; canonical and RSS item URLs retain the production domains. They are a review surface, not the PHP production deployment. To serve the static preview locally: `python3 -m http.server 8000 --directory /tmp/jsd-preview`. The hosted preview is maintained separately from the two GitHub source repositories.
 
 Browser QA covers the brief generation/copy flow, project filters/search, navigation, and note rendering. PHP checks cover rendering, escaping, missing-note responses, and SQLite content parity. No account system, analytics service, or scheduled background job is required.
+
+## Ideas shelf
+
+The workshop has four expandable concept briefs: an IBKR portfolio notebook, a Strava ride journal, a sensor dashboard, and a photo contact-sheet tool. These are placeholders for investigation, not working integrations. There are no connected accounts, tokens, live financial data, or trading controls. Official API starting points are linked from the IBKR and Strava briefs. Access and usage rules must be checked again before implementation.
+
+The studio uses “search visibility” and “getting found” language. Security services describe authorized incident triage, hardening, updates, and recovery; they do not claim certifications, guaranteed prevention, or 24/7 emergency coverage. Advertising spend is separate from service fees.

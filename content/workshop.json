@@ -124,5 +124,51 @@
         "I prefer an archive that remains usable without the software that created it. Plain text, conventional files, and documented exports make that a realistic goal."
       ]
     }
+  ],
+  "ideas": [
+    {
+      "id": "portfolio-notebook",
+      "number": "01",
+      "title": "Portfolio notebook",
+      "label": "IBKR API / PERSONAL DASHBOARD",
+      "summary": "A private place to understand positions, cash, and changes over time.",
+      "first_step": "Start with a read-only view of one account’s positions, plus a local snapshot and a simple comparison against the previous snapshot.",
+      "questions": "Choose the appropriate IBKR API and confirm account permissions, authentication, and data entitlements. Keep credentials server-side. The concept has no order-entry flow.",
+      "link": "https://www.interactivebrokers.com/docs/",
+      "link_label": "IBKR developer documentation"
+    },
+    {
+      "id": "ride-atlas",
+      "number": "02",
+      "title": "The long-way ride journal",
+      "label": "STRAVA API / RIDES & EXPLORATION",
+      "summary": "Connect rides with notes about the places, detours, and photographs worth remembering.",
+      "first_step": "Prototype a private ride list for the connected athlete, with distance, date, and manually written field notes.",
+      "questions": "Check Strava’s current access, subscription, display, and retention requirements before building. Keep exact routes and start/end locations private by default.",
+      "link": "https://developers.strava.com/docs/getting-started/",
+      "link_label": "Strava developer documentation"
+    },
+    {
+      "id": "small-signals",
+      "number": "03",
+      "title": "Small signals",
+      "label": "ESP32 / MQTT / HOME LAB",
+      "summary": "A small sensor project with a dashboard that makes its readings useful.",
+      "first_step": "Try a low-voltage room sensor and a local MQTT topic. Save a simple history and display when the last reading arrived.",
+      "questions": "Pick one useful measurement, decide how long to keep it, and show missing or stale data clearly. A desk display could be a later extension.",
+      "link": null,
+      "link_label": null
+    },
+    {
+      "id": "contact-sheet",
+      "number": "04",
+      "title": "Contact sheet",
+      "label": "PHOTOGRAPHY / PRIVATE ARCHIVES",
+      "summary": "Find the photograph you remember by its light, mood, or subject.",
+      "first_step": "Generate thumbnails from a small folder of copied images, add manual tags, and produce a portable contact sheet.",
+      "questions": "Preserve originals and keep derivatives separate. Decide which metadata is useful privately and strip location data from public exports.",
+      "link": null,
+      "link_label": null
+    }
   ]
 }
